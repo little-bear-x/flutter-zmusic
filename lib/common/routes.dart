@@ -5,7 +5,7 @@ import 'package:zmusic/app/splash/z_api.dart';
 
 const String initialRoute = route_splash_main;
 
-Route<dynamic> configRouters(RouteSettings settings) {
+Route<dynamic>? configRouters(RouteSettings settings) {
   List<RouteFactory> factorys = [
     generateRouteSplash,
     generateRouteLogin,

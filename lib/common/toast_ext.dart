@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class BotToastExt {
   static CancelFunc showText(
-      {@required String text,
+      {required String text,
       Color contentColor = Colors.white,
       BorderRadiusGeometry borderRadius =
           const BorderRadius.all(Radius.circular(10)),

@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:zmusic/common/res.dart';
 
 class CaptchaInput extends StatefulWidget {
-  final ValueChanged<List<String>> _captchaChanged;
+  final ValueChanged<List<String>>? _captchaChanged;
 
   CaptchaInput([this._captchaChanged]);
 
@@ -15,8 +15,8 @@ class _CaptchaInputState extends State<CaptchaInput> {
   static const _captchaSize = 4;
   static const _whiteSpace = ' ';
 
-  List<String> _captcha;
-  List<FocusNode> _focusNodes;
+  List<String> _captcha = [];
+  List<FocusNode> _focusNodes = [];
 
   void _captchaChange(index, String str) {
     if (str != _whiteSpace) {
@@ -40,12 +40,12 @@ class _CaptchaInputState extends State<CaptchaInput> {
     var emptyIndex = findFocusCaptcha.indexWhere((str) => isStrEmpty(str));
 
     if (emptyIndex != -1) {
-      FocusScope.of(context)
-          .requestFocus(_focusNodes[(emptyIndex + index) % _captchaSize]);
+      FocusScope.of(context).requestFocus(
+          _focusNodes[((emptyIndex + index) % _captchaSize).toInt()]);
     } else {
       FocusScope.of(context).unfocus();
       if (widget._captchaChanged != null) {
-        widget._captchaChanged(_captcha);
+        widget._captchaChanged!(_captcha);
       }
     }
   }

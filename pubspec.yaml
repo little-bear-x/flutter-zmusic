@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: '>=2.19.4 <4.0.0'
 
 dependencies:
   flutter:
@@ -26,10 +26,11 @@ dependencies:
 
   netease_music_api:
     git:
-      url: git://github.com/hcanyz/flutter-netease-music-api.git
+      # url: https://github.com/hcanyz/flutter-netease-music-api.git
+      url: https://github.com/little-bear-x/flutter-netease-music-api.git
 
   # toast
-  bot_toast: ^3.0.0
+  bot_toast: ^4.1.3
 
 dev_dependencies:
   flutter_test:

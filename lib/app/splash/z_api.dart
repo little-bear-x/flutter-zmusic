@@ -3,7 +3,7 @@ import 'package:zmusic/app/splash/_main.dart';
 
 const String route_splash_main = '/splash/main';
 
-Route<dynamic> generateRouteSplash(RouteSettings settings) {
+Route<dynamic>? generateRouteSplash(RouteSettings settings) {
   switch (settings.name) {
     case route_splash_main:
       return PageRouteBuilder(

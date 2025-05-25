@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter/widgets.dart';
 import 'package:netease_music_api/netease_music_api.dart';
 import 'package:zmusic/common/res.dart';
 import 'package:zmusic/common/utils.dart';
@@ -15,9 +14,9 @@ class _DiscoveryMainState extends State<DiscoveryMain>
     with AutomaticKeepAliveClientMixin {
   var _indicator = new GlobalKey<RefreshIndicatorState>();
 
-  BannerListWrap _bannerData;
-  HomeDragonBallWrap _dragonBallData;
-  HomeBlockPageWrap _blockPageData;
+  BannerListWrap _bannerData = BannerListWrap();
+  HomeDragonBallWrap _dragonBallData = HomeDragonBallWrap();
+  HomeBlockPageWrap _blockPageData = HomeBlockPageWrap();
 
   _requestData(bool refresh) async {
     var api = NeteaseMusicApi();
@@ -30,11 +29,11 @@ class _DiscoveryMainState extends State<DiscoveryMain>
 
     setState(() {
       _bannerData =
-          BannerListWrap.fromJson(data.findResponseData(bannerMetaData));
+          BannerListWrap.fromJson(data.findResponseData(bannerMetaData) ?? {});
       _dragonBallData = HomeDragonBallWrap.fromJson(
-          data.findResponseData(dragonBallMetaData));
-      _blockPageData =
-          HomeBlockPageWrap.fromJson(data.findResponseData(blockPageMetaData));
+          data.findResponseData(dragonBallMetaData) ?? {});
+      _blockPageData = HomeBlockPageWrap.fromJson(
+          data.findResponseData(blockPageMetaData) ?? {});
     });
   }
 
@@ -50,21 +49,19 @@ class _DiscoveryMainState extends State<DiscoveryMain>
   Widget build(BuildContext context) {
     super.build(context);
     List<Widget> blockWidgets = [];
-    if (_blockPageData != null) {
-      final blocks = _blockPageData.data.blocks;
-      blockWidgets.addAll(List.generate(blocks.length, (index) {
-        var block = blocks[index];
-        Widget bodyBlock;
-        if (block.showType == 'HOMEPAGE_SLIDE_PLAYLIST') {
-          bodyBlock = _BlockBodyStylePlaylist(block.creatives);
-        } else {
-          bodyBlock = Text('body showType: `${block.showType}`');
-        }
-        return Column(
-          children: [_BlockHeader(block.uiElement), bodyBlock],
-        );
-      }));
-    }
+    final blocks = _blockPageData.data.blocks;
+    blockWidgets.addAll(List.generate(blocks.length, (index) {
+      var block = blocks[index];
+      Widget bodyBlock;
+      if (block.showType == 'HOMEPAGE_SLIDE_PLAYLIST') {
+        bodyBlock = _BlockBodyStylePlaylist(block.creatives ?? []);
+      } else {
+        bodyBlock = Text('body showType: `${block.showType}`');
+      }
+      return Column(
+        children: [_BlockHeader(block.uiElement), bodyBlock],
+      );
+    }));
     return RefreshIndicator(
       key: _indicator,
       onRefresh: () {
@@ -100,7 +97,7 @@ class _BannerState extends State<_Banner> {
       // 长宽比 2.65
       height: (MediaQuery.of(context).size.width - 15 * 2) / 2.65,
       child: PageView.builder(
-          itemCount: widget._bannerData?.banners?.length ?? 0,
+          itemCount: widget._bannerData.banners.length,
           itemBuilder: (BuildContext context, int index) {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -139,8 +136,11 @@ class _DragonBallState extends _FixedSizePageScrollState<_DragonBall> {
       padding: EdgeInsets.only(left: appIconUnusedWidth, top: 15),
       child: ListView.builder(
           scrollDirection: Axis.horizontal,
-          physics: FixedSizePageScrollPhysics(itemDimension: iconDimension),
-          itemCount: _dragonBallData?.data?.length ?? 0,
+          physics: FixedSizePageScrollPhysics(
+            parent: const BouncingScrollPhysics(),
+            itemDimension: iconDimension,
+          ),
+          itemCount: _dragonBallData.data.length,
           itemBuilder: (BuildContext context, int index) {
             var ballItem = _dragonBallData.data[index];
             Widget iconWidget = Image.network(
@@ -167,7 +167,7 @@ class _DragonBallState extends _FixedSizePageScrollState<_DragonBall> {
                 ],
               );
             }
-            if (ballItem.skinSupport) {
+            if (ballItem.skinSupport ?? false) {
               iconWidget = DecoratedBox(
                 decoration: BoxDecoration(
                     color: color_secondary,
@@ -183,7 +183,7 @@ class _DragonBallState extends _FixedSizePageScrollState<_DragonBall> {
                 children: [
                   iconWidget,
                   Text(
-                    ballItem.name,
+                    ballItem.name ?? "",
                     style: TextStyle(fontSize: 10, color: color_text_primary),
                   )
                 ],
@@ -214,21 +214,26 @@ class _BlockHeaderState extends State<_BlockHeader> {
         children: <Widget>[
           Expanded(
             flex: 1,
-            child: Text(widget._uiElement.subTitle.title,
+            child: Text(widget._uiElement.subTitle?.title ?? "",
                 style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
           ),
           SizedBox(
             width: 62,
             height: 22,
-            child: FlatButton(
-              color: Colors.white,
-              padding: EdgeInsets.all(0),
-              child: Text(widget._uiElement.button.text,
-                  style: TextStyle(fontSize: 11)),
-              shape: RoundedRectangleBorder(
+            child: TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.white,
+                padding: EdgeInsets.zero,
+                shape: RoundedRectangleBorder(
                   side: BorderSide(color: color_text_hint),
-                  borderRadius: BorderRadius.circular(20.0)),
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+              ),
               onPressed: () {},
+              child: Text(
+                widget._uiElement.button?.text ?? "",
+                style: TextStyle(fontSize: 11),
+              ),
             ),
           ),
         ],
@@ -259,14 +264,16 @@ class _BlockBodyStylePlaylistState
       padding: EdgeInsets.only(left: appIconUnusedWidth),
       child: ListView.builder(
           scrollDirection: Axis.horizontal,
-          physics: FixedSizePageScrollPhysics(itemDimension: iconDimension),
+          physics: FixedSizePageScrollPhysics(
+              parent: const BouncingScrollPhysics(),
+              itemDimension: iconDimension),
           itemCount: widget._creatives.length,
           itemBuilder: (BuildContext context, int index) {
             var creative = widget._creatives[index];
             Widget imgWidget = Stack(
               children: [
                 Image.network(
-                  creative.uiElement.image.imageUrl,
+                  creative.uiElement.image!.imageUrl,
                   width: appIconWidth,
                   height: appIconWidth,
                 ),
@@ -281,7 +288,7 @@ class _BlockBodyStylePlaylistState
                           size: 11,
                         ),
                         Text(
-                            '${convergenceAmountUnit(creative.resources[0].resourceExtInfo.playCount)}',
+                            '${convergenceAmountUnit(creative.resources[0].resourceExtInfo.playCount ?? 0)}',
                             style: TextStyle(fontSize: 11, color: Colors.white))
                       ],
                     ))
@@ -295,7 +302,7 @@ class _BlockBodyStylePlaylistState
                 children: [
                   imgWidget,
                   Text(
-                    creative.uiElement.mainTitle.title,
+                    creative.uiElement.mainTitle?.title ?? "",
                     maxLines: 2,
                     style: TextStyle(fontSize: 11, color: color_text_primary),
                   )
@@ -325,7 +332,9 @@ abstract class _FixedSizePageScrollState<T extends StatefulWidget>
   double iconDimension = 0;
 
   _FixedSizePageScrollState(
-      {this.appIconCount, this.appIconWidth, this.appIconUnusedWidth});
+      {required this.appIconCount,
+      required this.appIconWidth,
+      required this.appIconUnusedWidth});
 
   @override
   Widget build(BuildContext context) {
@@ -334,6 +343,6 @@ abstract class _FixedSizePageScrollState<T extends StatefulWidget>
             appIconWidth * appIconCount) /
         appIconCount.floor();
     iconDimension = appIconWidth + iconMarginRight;
-    return null;
+    return Container();
   }
 }

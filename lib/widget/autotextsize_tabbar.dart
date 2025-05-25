@@ -1,13 +1,11 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class AutoTextSizeTabBar extends StatefulWidget {
   AutoTextSizeTabBar(
-      {this.tabBarTexts,
-      this.controller,
-      this.defaultTextStyle,
-      this.selectTextStyle});
+      {required this.tabBarTexts,
+      required this.controller,
+      required this.defaultTextStyle,
+      required this.selectTextStyle});
 
   final List<String> tabBarTexts;
   final TabController controller;
@@ -20,11 +18,11 @@ class AutoTextSizeTabBar extends StatefulWidget {
 }
 
 class _AutoTextSizeTabBarState extends State<AutoTextSizeTabBar> {
-  int _curIndex;
+  int _curIndex = 0;
   int _nextIndex = -1;
-  double _t;
-  TextStyle _textStyleCur;
-  TextStyle _textStyleNext;
+  double _t = 0.0;
+  TextStyle _textStyleCur = TextStyle();
+  TextStyle _textStyleNext = TextStyle();
 
   @override
   void initState() {
@@ -33,17 +31,17 @@ class _AutoTextSizeTabBarState extends State<AutoTextSizeTabBar> {
     _textStyleCur = widget.selectTextStyle;
     _curIndex = widget.controller.index;
 
-    widget.controller.animation.addListener(() {
-      _curIndex = widget.controller.animation.value.floor();
-      _nextIndex = widget.controller.animation.value.round();
-      var value = (widget.controller.animation.value * 10).floor() / 10;
+    widget.controller.animation?.addListener(() {
+      _curIndex = widget.controller.animation!.value.floor();
+      _nextIndex = widget.controller.animation!.value.round();
+      var value = (widget.controller.animation!.value * 10).floor() / 10;
       value = double.parse((value - value.floor()).toStringAsFixed(1));
       if (_t != value) {
         setState(() {
           _textStyleCur = TextStyle.lerp(
-              widget.defaultTextStyle, widget.selectTextStyle, 1 - value);
+              widget.defaultTextStyle, widget.selectTextStyle, 1 - value)!;
           _textStyleNext = TextStyle.lerp(
-              widget.defaultTextStyle, widget.selectTextStyle, value);
+              widget.defaultTextStyle, widget.selectTextStyle, value)!;
         });
         _t = value;
       }

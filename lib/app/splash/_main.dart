@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:netease_music_api/netease_music_api.dart';
 import 'package:zmusic/app/home/z_api.dart';
 import 'package:zmusic/app/login/z_api.dart';
@@ -29,9 +30,9 @@ class _SplashMainState extends State<SplashMain> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        brightness: Brightness.dark,
+        systemOverlayStyle: SystemUiOverlayStyle.light,
       ),
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: ConstrainedBox(
         constraints: BoxConstraints.expand(),
         child: Stack(

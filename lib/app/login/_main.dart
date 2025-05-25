@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:netease_music_api/netease_music_api.dart';
 import 'package:zmusic/app/home/z_api.dart';
 import 'package:zmusic/common/res.dart';
@@ -15,8 +16,8 @@ class _LoginMainState extends State<LoginMain>
     with SingleTickerProviderStateMixin {
   bool _protocolChecked = false;
 
-  Animation _protocolAnimation;
-  AnimationController _protocolAnimationController;
+  late Animation<Offset> _protocolAnimation;
+  late AnimationController _protocolAnimationController;
 
   @override
   void initState() {
@@ -58,9 +59,9 @@ class _LoginMainState extends State<LoginMain>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        brightness: Brightness.dark,
+        systemOverlayStyle: SystemUiOverlayStyle.light,
       ),
       body: ConstrainedBox(
         constraints: BoxConstraints.expand(),
@@ -145,9 +146,9 @@ class _LoginMainState extends State<LoginMain>
                               checkColor: Colors.white54,
                               value: _protocolChecked,
                               activeColor: color_secondary,
-                              onChanged: (bool value) {
+                              onChanged: (bool? value) {
                                 setState(() {
-                                  _protocolChecked = !_protocolChecked;
+                                  _protocolChecked = value ?? false;
                                 });
                               },
                             ),

@@ -14,7 +14,7 @@ const Color color_text_primary = Color(0xff333333);
 
 const Color color_text_hint = Color(0xffd1d1d1);
 
-String joinImageAssetPath(String image, [String app]) {
+String joinImageAssetPath(String image, [String? app]) {
   if (app == null || app.isEmpty) {
     return 'assets/images/$image';
   }

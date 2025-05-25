@@ -20,7 +20,7 @@ class _HomeMainState extends State<HomeMain> with TickerProviderStateMixin {
   ];
   final int initialIndex = 1;
 
-  TabController _controller;
+  late TabController _controller;
 
   @override
   void initState() {
@@ -35,7 +35,7 @@ class _HomeMainState extends State<HomeMain> with TickerProviderStateMixin {
       drawer: Drawer(
         child: Row(
           children: [
-            RaisedButton.icon(
+            ElevatedButton.icon(
               icon: Icon(Icons.logout),
               label: Text("注销"),
               onPressed: () async {

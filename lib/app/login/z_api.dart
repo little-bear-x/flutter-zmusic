@@ -38,7 +38,7 @@ void skipLoginRegister(BuildContext context, String phoneNum, String captcha) {
       arguments: {'phoneNum': phoneNum, 'captcha': captcha});
 }
 
-Route<dynamic> generateRouteLogin(RouteSettings settings) {
+Route<dynamic>? generateRouteLogin(RouteSettings settings) {
   switch (settings.name) {
     case _route_login_main:
       return PageRouteBuilder(

@@ -30,16 +30,15 @@ class MyApp extends StatelessWidget {
       initialRoute: initialRoute,
       onGenerateRoute: configRouters,
       theme: ThemeData(
-          appBarTheme: AppBarTheme(
-              iconTheme: IconThemeData(color: color_text_primary),
-              textTheme: TextTheme(
-                  headline6:
-                      TextStyle(color: color_text_primary, fontSize: 18)),
-              color: Colors.transparent,
-              elevation: 0,
-              brightness: Brightness.light),
-          backgroundColor: color_primary,
-          unselectedWidgetColor: color_primary_shallow),
+        appBarTheme: AppBarTheme(
+            iconTheme: IconThemeData(color: color_text_primary),
+            titleTextStyle: TextStyle(color: color_text_primary, fontSize: 18),
+            color: Colors.transparent,
+            elevation: 0,
+            systemOverlayStyle: SystemUiOverlayStyle.dark),
+        unselectedWidgetColor: color_primary_shallow,
+        colorScheme: ColorScheme.fromSeed(seedColor: color_primary),
+      ),
     );
   }
 }

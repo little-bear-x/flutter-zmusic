@@ -12,9 +12,9 @@ class VideoMain extends StatefulWidget {
 }
 
 class _VideoMainState extends State<VideoMain> {
-  final List<VideoNavData> _list = getVideoNavDataList();
+  final List _list = getVideoNavDataList();
 
-  TabController _tabController;
+  late TabController _tabController;
 
   @override
   void initState() {

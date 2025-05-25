@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:netease_music_api/netease_music_api.dart';
@@ -14,7 +12,11 @@ class ChooseCountriesData {
   String showLine;
 
   ChooseCountriesData(
-      {this.zh, this.en, this.locale, this.code, this.showLine});
+      {required this.zh,
+      required this.en,
+      required this.locale,
+      required this.code,
+      required this.showLine});
 }
 
 void showChooseCountriesDialog(
@@ -26,18 +28,18 @@ void showChooseCountriesDialog(
     callback.call("");
     return;
   }
-  List<ChooseCountriesData> data = List();
-  List<String> navigation = List();
+  List<ChooseCountriesData> data = [];
+  List<String> navigation = [];
   result.data.forEach((element) {
-    navigation.add(element.label[0]);
+    navigation.add(element.label![0]);
     data.add(ChooseCountriesData(
-        zh: element.label, en: "", locale: "", code: "", showLine: "0"));
+        zh: element.label ?? "", en: "", locale: "", code: "", showLine: "0"));
     element.countryList.forEach((countryItem) {
       data.add(ChooseCountriesData(
-          zh: countryItem.zh,
-          en: countryItem.en,
-          locale: countryItem.locale,
-          code: countryItem.code,
+          zh: countryItem.zh ?? "",
+          en: countryItem.en ?? "",
+          locale: countryItem.locale ?? "",
+          code: countryItem.code ?? "",
           showLine: "1"));
     });
   });
@@ -47,12 +49,8 @@ void showChooseCountriesDialog(
             data: data,
             navigation: navigation,
             callback: (value) {
-              if (value != null) {
-                print(value.zh);
-                callback.call(value.code);
-              } else {
-                callback.call("");
-              }
+              print(value?.zh);
+              callback.call(value!.code);
             },
           ));
 }
@@ -60,13 +58,13 @@ void showChooseCountriesDialog(
 class ChooseCountriesDialog extends Dialog {
   final List<ChooseCountriesData> data;
   final List<String> navigation;
-  final ValueChanged<ChooseCountriesData> callback;
+  final ValueChanged<ChooseCountriesData?> callback;
 
   ChooseCountriesDialog(
-      {Key key,
-      @required this.data,
-      @required this.navigation,
-      @required this.callback})
+      {Key? key,
+      required this.data,
+      required this.navigation,
+      required this.callback})
       : super(key: key);
 
   @override
@@ -79,25 +77,26 @@ class ChooseCountriesDialog extends Dialog {
 class ChooseCountriesWidget extends StatefulWidget {
   final List<ChooseCountriesData> data;
   final List<String> navigation;
-  final ValueChanged<ChooseCountriesData> callback;
+  final ValueChanged<ChooseCountriesData?> callback;
 
   ChooseCountriesWidget(
-      {Key key,
-      @required this.data,
-      @required this.navigation,
-      @required this.callback});
+      {Key? key,
+      required this.data,
+      required this.navigation,
+      required this.callback})
+      : super(key: key);
 
   @override
   _ChooseCountriesWidgetState createState() {
     return _ChooseCountriesWidgetState(
-        data: data, navigation: navigation, callback: callback);
+        data: data, navigation: navigation, callback: callback, key: key);
   }
 }
 
 class _ChooseCountriesWidgetState extends State<ChooseCountriesWidget> {
   final List<ChooseCountriesData> data;
   final List<String> navigation;
-  final ValueChanged<ChooseCountriesData> callback;
+  final ValueChanged<ChooseCountriesData?> callback;
   String letter = "A";
   bool showLetter = false;
   var diff = 0.0;
@@ -120,10 +119,12 @@ class _ChooseCountriesWidgetState extends State<ChooseCountriesWidget> {
   }
 
   _ChooseCountriesWidgetState(
-      {Key key,
-      @required this.data,
-      @required this.navigation,
-      @required this.callback});
+      {Key? key,
+      required this.data,
+      required this.navigation,
+      required this.callback})
+      : _controllerScroll = ScrollController(),
+        super();
 
   Widget getListItem(BuildContext context, ChooseCountriesData data) {
     return data.showLine == "1"

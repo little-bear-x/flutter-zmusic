@@ -9,7 +9,7 @@ void skipHomeMainSingleTask(BuildContext context) {
       context, _route_home_main, (route) => false);
 }
 
-Route<dynamic> generateRouteMain(RouteSettings settings) {
+Route<dynamic>? generateRouteMain(RouteSettings settings) {
   switch (settings.name) {
     case _route_home_main:
       return PageRouteBuilder(
